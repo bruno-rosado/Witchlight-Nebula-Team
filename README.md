@@ -13,3 +13,10 @@ Our project allows Mission Planners at NASA and other commercial space companies
 - Brittany Sifford
 - Valeria Soimaru
 - Sahara Tijol
+
+## User Stories
+
+User asks chatbot: "What's the weather generally for a rocket launch on this day and location." 
+Chatbot connects with MCP and gets prediction from dataset
+  it then compares that prediction to NASA's launch criteria
+Output back to user Yes/No with flair and/or details.
