@@ -21,18 +21,19 @@ const tools = [
   }
 ];
 
-// 2) Server-side proxy to your MCP server
-// Expect your MCP server to expose POST {MCP_URL}/call with body: { tool, args }
-async function callMcpTool(tool, args) {
+// 2) Fetch available tools and resources from MCP server
+async function getMcpCapabilities() {
   const base = process.env.MCP_URL;
   if (!base) {
-    throw new Error("MCP_URL is not set. Example: MCP_URL=http://localhost:4000/mcp");
+    throw new Error("MCP_URL is not set. Example: MCP_URL=http://localhost:4000");
   }
 
-  const res = await fetch(`${base.replace(/\/$/, "")}/call`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ tool, args: args || {} })
+  // Remove /mcp suffix if present, since /list is at the root level
+  const baseUrl = base.replace(/\/$/, "").replace(/\/mcp$/, "");
+
+  const res = await fetch(`${baseUrl}/list`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
   });
 
   if (!res.ok) {
@@ -40,13 +41,48 @@ async function callMcpTool(tool, args) {
     throw new Error(`MCP server error ${res.status}: ${text}`);
   }
 
-  // Be tolerant of different MCP server shapes
-  // Prefer JSON, fallback to raw text
-  const contentType = res.headers.get("content-type") || "";
-  if (contentType.includes("application/json")) {
-    return await res.json();
+  return await res.json();
+}
+
+// 3) Server-side proxy to your MCP server
+// Calls tools via the MCP protocol
+async function callMcpTool(tool, args) {
+  const base = process.env.MCP_URL;
+  if (!base) {
+    throw new Error("MCP_URL is not set. Example: MCP_URL=http://localhost:4000");
   }
-  return await res.text();
+
+  // Call the MCP server using JSON-RPC protocol
+  const res = await fetch(`${base.replace(/\/$/, "")}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json, text/event-stream"
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: Date.now(),
+      method: "tools/call",
+      params: {
+        name: tool,
+        arguments: args || {}
+      }
+    })
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`MCP server error ${res.status}: ${text}`);
+  }
+
+  const result = await res.json();
+
+  // Handle JSON-RPC response
+  if (result.error) {
+    throw new Error(`MCP tool error: ${result.error.message}`);
+  }
+
+  return result.result;
 }
 
 export default async function handler(req, res) {
@@ -63,8 +99,29 @@ export default async function handler(req, res) {
 
     const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-    const system =
-      "You can call the server-side MCP tool named 'mcp_call_tool' to retrieve live data when relevant.";
+    // Fetch available tools and resources from MCP server
+    const capabilities = await getMcpCapabilities();
+
+    // Build system prompt with available tools and resources
+    let system = "You have access to the following MCP tools and resources:\n\n";
+
+    if (capabilities.tools && capabilities.tools.length > 0) {
+      system += "TOOLS:\n";
+      capabilities.tools.forEach(tool => {
+        system += `- ${tool.name}: ${tool.description}\n`;
+      });
+      system += "\n";
+    }
+
+    if (capabilities.resources && capabilities.resources.length > 0) {
+      system += "RESOURCES:\n";
+      capabilities.resources.forEach(resource => {
+        system += `- ${resource.uri}: ${resource.description || resource.name}\n`;
+      });
+      system += "\n";
+    }
+
+    system += "When relevant to answer the user's question, call the 'mcp_call_tool' proxy with the appropriate tool name and arguments.";
 
     // Start the conversation
     const messages = [
@@ -152,7 +209,8 @@ export default async function handler(req, res) {
       .map(b => b.text)
       .join("\n\n");
 
-    return res.status(200).json({ ok: true, answer: finalText });
+
+      return res.status(200).json({ ok: true, answer: finalText });
   } catch (err) {
     console.error("Error in /api/ask:", err);
     return res.status(500).json({ error: err?.message ?? String(err) });
