@@ -281,6 +281,18 @@ const About = () => {
   }}
 />
 
+<img
+    src="/projectnebula_icon_dropshadow.png"
+  alt="Team Collaboration"
+  style={{
+    position: "absolute",
+    top: "19px",
+    left: "250px",
+    width: "80px",
+    height: "auto",
+    zIndex: 3,
+  }}
+/>
 
 
     {/* --- Info Box (bottom-right) --- */}
