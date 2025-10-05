@@ -150,7 +150,7 @@ app.post('/mcp', async (req, res) => {
 
 // ----------------------------- START THE SERVER -----------------------------
 // Pick a port: use PORT from env if set, otherwise default to 3000.
-const port = parseInt(process.env.PORT || '3000');
+const port = parseInt(process.env.PORT || '3001');
 // Start the Express server listening.
 app.listen(port, () => {
     // Log a startup message to the console for confirmation.

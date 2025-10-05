@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import AskForm from '@/components/AskForm'
+import Head from 'next/head'
+import ChatWindow from '../components/ChatWindow'
+import Sidebar from '../components/SideBar'
+import Header from '../components/Header'
 
 export default function Home() {
-
   const [q, setQ] = useState("");
   const [res, setRes] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -25,26 +27,32 @@ export default function Home() {
   }
 
   return (
-    <main className="p-8">
-      <h1>MCP Ask</h1>
-      <form onSubmit={onSubmit}>
-        <textarea
-          rows={4}
-          placeholder="Ask a question…"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          style={{ width: "100%", padding: 12 }}
+    <>
+      <Head>
+        <title>AI Bot Chat</title>
+        <meta 
+          name="description" 
+          content="A lightweight Gemini-style chat UI built with Next.js + Tailwind" 
         />
-        <button disabled={loading} style={{ marginTop: 12 }}>
-          {loading ? "Thinking…" : "Ask"}
-        </button>
-      </form>
+      </Head>
 
-      {res && (
-        <pre style={{ background: "#f6f6f6", padding: 12, marginTop: 16, overflowX: "auto" }}>
-          {JSON.stringify(res, null, 2)}
-        </pre>
-      )}
-    </main>
-  )
+      <div className="h-screen flex flex-col bg-slate-50 text-slate-900">
+        {/* Header stays at the top */}
+        <Header />
+
+        {/* Main content area fills remaining space */}
+        <div className="flex flex-1 overflow-hidden">
+          {/* Sidebar - fixed width */}
+          <aside className="w-64 bg-gray-800 text-white">
+            <Sidebar />
+          </aside>
+
+          {/* ChatWindow - fills remaining space */}
+          <main className="flex-1">
+            <ChatWindow />
+          </main>
+        </div>
+      </div>
+    </>
+  );
 }
