@@ -20,6 +20,9 @@ import { z } from 'zod';
 // registerTools = centralized function to register all tools from the ./tools directory.
 import { registerAll as registerTools } from './tools/index.js';
 
+// registerResources = centralized function to register all resources from the ./resources directory.
+import { registerAll as registerResources } from './resources/index.js';
+
 // ----------------------------- MCP SERVER SETUP -----------------------------
 
 // Create an MCP server instance named "demo-server".
@@ -88,11 +91,14 @@ server.registerResource = function(name: string, template: any, metadata: any, h
 // );
 
 
-// ----------------------------- REGISTER TOOLS -----------------------------
+// ----------------------------- REGISTER TOOLS & RESOURCES -----------------------------
 // Call the centralized function to register all tools from the ./tools directory.
 // Register all tools here (await if your index uses dynamic imports)
 
 await registerTools(server);
+
+// Register all resources from the ./resources directory
+await registerResources(server);
 
 // ----------------------------- EXPRESS SERVER SETUP -----------------------------
 // Create an Express app instance to expose an HTTP endpoint.
