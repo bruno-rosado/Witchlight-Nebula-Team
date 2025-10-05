@@ -6,30 +6,31 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 let cachedClient = null;
 
 export async function getMcpClient() {
-  if (cachedClient) return cachedClient;
+    if (cachedClient) return cachedClient;
 
-  // Default to localhost (mcp-server) if env var not provided.
-  const url = process.env.MCP_SERVER_URL || "http://localhost:3000/mcp";
-  if (!url) throw new Error("MCP_SERVER_URL is not set");
+    // Default to localhost (mcp-server) if env var not provided.
+    // Support both MCP_SERVER_URL and MCP_URL for local env naming.
+    const url = process.env.MCP_SERVER_URL || process.env.MCP_URL || "http://localhost:3000/mcp";
+    if (!url) throw new Error("MCP server URL is not set (MCP_SERVER_URL or MCP_URL)");
 
-  const transport = new StreamableHTTPClientTransport(url, { fetch: fetch });
-  const client = new McpClient({ name: 'next-api-mcp-client', version: '0.1.0' });
-  await client.connect(transport);
-  cachedClient = client;
-  return client;
+    const transport = new StreamableHTTPClientTransport(url, { fetch: fetch });
+    const client = new McpClient({ name: 'next-api-mcp-client', version: '0.1.0' });
+    await client.connect(transport);
+    cachedClient = client;
+    return client;
 }
 
 export async function callMcpTool(toolName, args = {}) {
-  const client = await getMcpClient();
+    const client = await getMcpClient();
 
-  // callTool expects an object with { name, args }
-  const result = await client.callTool({ name: toolName, args });
+    // callTool expects an object with { name, args }
+    const result = await client.callTool({ name: toolName, args });
 
-  // Normalize result content into human-friendly text
-  let text = "";
-  for (const block of result.content || []) {
-    if (block.type === "text" && block.text) text += block.text + "\n";
-    else if (block.type === "json" && block.json) text += JSON.stringify(block.json) + "\n";
-  }
-  return text.trim() || JSON.stringify(result);
+    // Normalize result content into human-friendly text
+    let text = "";
+    for (const block of result.content || []) {
+        if (block.type === "text" && block.text) text += block.text + "\n";
+        else if (block.type === "json" && block.json) text += JSON.stringify(block.json) + "\n";
+    }
+    return text.trim() || JSON.stringify(result);
 }
