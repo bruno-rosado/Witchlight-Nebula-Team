@@ -73,7 +73,7 @@ const About = () => {
 
   // ---------- 🚀 ROCKET ----------
   const rocket = new Image();
-  rocket.src = "/rocket_image.png"; // from public folder
+  rocket.src = "/rocket_image_dropshadow.png"; // from public folder
   const rocketWidth = 100;
   const rocketHeight = 180;
   let rocketX = screenW - rocketWidth - 650;
@@ -243,7 +243,7 @@ const About = () => {
 
 {/* --- Freely movable visuals --- */}
 <img
-  src="/gathering_weather_data_step1_visual.png"
+  src="/gathering_weather_data_step1_visual_dropshadow_edit.png"
   alt="Gathering Weather Data"
   style={{
     position: "absolute",
@@ -256,7 +256,7 @@ const About = () => {
 />
 
 <img
-  src="/processing_data_step2_visual.png"
+  src="/processing_data_step2_visual_dropshadow.png"
   alt="Processing Data"
   style={{
     position: "absolute",
@@ -269,7 +269,7 @@ const About = () => {
 />
 
 <img
-  src="/stick_highfive.png"
+  src="/stick_highfive_dropshadow.png"
   alt="Team Collaboration"
   style={{
     position: "absolute",
