@@ -29,10 +29,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>AI Bot Chat</title>
-        <meta 
-          name="description" 
-          content="A lightweight Gemini-style chat UI built with Next.js + Tailwind" 
+        <title>Witchlight Nebula | NASA Mission Planning Assistant</title>
+        <meta
+          name="description"
+          content="AI-powered mission planning and coordination tool for NASA operations"
         />
       </Head>
 

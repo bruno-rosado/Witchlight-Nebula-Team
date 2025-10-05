@@ -47,7 +47,7 @@ export default function ChatWindow() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-semibold">Witchlight Nebula</h1>
-            <div className="text-sm text-slate-500">AI-powered conversation assistant</div>
+            <div className="text-sm text-slate-500">NASA Mission Planning Assistant</div>
           </div>
         </div>
       </div>
