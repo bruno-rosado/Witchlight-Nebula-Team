@@ -27,7 +27,7 @@ Output back to user Yes/No with flair and/or details.
 Run instructions: 
 1. cd to frontend directory.
 2. npm install (or shortcut npm i)
-3. create .env file and add 
+3. create .env file and add (with correct keys in place of HIDDEN)
 ```
 MCP_URL=http://localhost:3000/mcp
 ANTHROPIC_API_KEY=HIDDEN
