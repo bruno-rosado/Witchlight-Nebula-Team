@@ -92,6 +92,7 @@ app.post('/mcp', async (req, res) => {
 
     // Ask the transport to handle the incoming JSON-RPC request body
     // and write the response back to the HTTP response object.
+    console.log('Incoming /mcp request body:', JSON.stringify(req.body));
     await transport.handleRequest(req, res, req.body);
 });
 

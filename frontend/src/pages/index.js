@@ -1,33 +1,51 @@
 import { useState } from 'react'
-import Router from 'next/router'
+import AskForm from '@/components/AskForm'
 
 export default function Home() {
-    const [a, setA] = useState('')
-    const [b, setB] = useState('')
-    const [loading, setLoading] = useState(false)
 
-    async function onSubmit(e) {
-        e.preventDefault()
-        setLoading(true)
-        try {
-            const res = await fetch('/api/ask', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ a: Number(a), b: Number(b) })
-            })
-            const json = await res.json()
-            Router.push(`/result?result=${encodeURIComponent(JSON.stringify(json))}`)
-        } finally { setLoading(false) }
+  const [q, setQ] = useState("");
+  const [res, setRes] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setRes(null);
+    try {
+      const r = await fetch("/api/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: q }),
+      });
+      const data = await r.json();
+      setRes(data);
+    } finally {
+      setLoading(false);
     }
+  }
 
     return (
         <main className="p-8">
-            <h1 className="text-2xl mb-4">Home (Pages Router)</h1>
-            <form onSubmit={onSubmit} className="flex gap-2">
-                <input value={a} onChange={e => setA(e.target.value)} placeholder="a" className="px-2 py-1 border rounded" />
-                <input value={b} onChange={e => setB(e.target.value)} placeholder="b" className="px-2 py-1 border rounded" />
-                <button disabled={loading} className="px-3 py-1 bg-black text-white rounded">{loading ? '...' : 'Add'}</button>
-            </form>
+                  <h1>MCP Ask</h1>
+      <form onSubmit={onSubmit}>
+        <textarea
+          rows={4}
+          placeholder="Ask a question…"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          style={{ width: "100%", padding: 12 }}
+        />
+        <button disabled={loading} style={{ marginTop: 12 }}>
+          {loading ? "Thinking…" : "Ask"}
+        </button>
+      </form>
+
+      {res && (
+        <pre style={{ background: "#f6f6f6", padding: 12, marginTop: 16, overflowX: "auto" }}>
+          {JSON.stringify(res, null, 2)}
+        </pre>
+      )}
+            <AskForm />
         </main>
     )
 }
