@@ -46,7 +46,7 @@ Project Nebula implements the Model Context Protocol (MCP) to create a standardi
 
 ### Current Capabilities
 
-#### <
+#### 
  EONET Integration (Earth Observatory Natural Event Tracker)
 - Access NASA's natural event data including wildfires, storms, volcanoes, and severe weather
 - Query historical events and track ongoing phenomena
@@ -57,7 +57,7 @@ Project Nebula implements the Model Context Protocol (MCP) to create a standardi
 - Launch window analysis and weather constraints
 - Environmental condition monitoring for field operations
 
-#### =' Extensible Tool Framework
+####  Extensible Tool Framework
 - Custom tool development for mission-specific needs
 - Standardized interfaces for new data sources
 - Plug-and-play architecture for rapid capability expansion
