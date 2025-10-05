@@ -198,32 +198,49 @@ const About = () => {
         fontWeight: "bold",
       }}
     >
-      About Page ✨
+      Project Nebula
     </div>
 
     {/* --- Bulleted List (separate & moveable) --- */}
-    <div
-      style={{
-        position: "absolute",
-        top: "60px", // adjust this to move it up/down
-        left: "35px", // adjust this to move it left/right
-        zIndex: 2,
-        color: "white",
-        fontSize: "1.4rem",
-        lineHeight: "1.8",
-        textAlign: "left",
-      }}
-    >
-      <ul style={{ listStyleType: "disc", marginLeft: "20px" }}>
-        <li>Provide launch prep team with important weather info</li>
-        <li>Cloud cover and visibility monitoring</li>
-        <li>Rain probability and humidity forecasting</li>
-        <li>Maximize launch safety through accurate forecasting</li>
-      </ul>
-    </div>
+<div
+  style={{
+    position: "absolute",
+    top: "80px",
+    left: "30px",
+    zIndex: 2,
+    color: "white",
+    fontSize: "1.2rem",
+    lineHeight: "3",
+    textAlign: "left",
+    maxWidth: "380px",
+    wordWrap: "break-word",
+  }}
+>
+  <ul
+    style={{
+      listStyleType: "disc",
+      marginLeft: "20px",
+      paddingLeft: "10px",
+    }}
+  >
+    <li style={{ marginBottom: "30px" }}>
+      Provide launch prep team with important weather info
+    </li>
+    <li style={{ marginBottom: "30px" }}>
+      Cloud cover and visibility monitoring
+    </li>
+    <li style={{ marginBottom: "30px" }}>
+      Rain probability and humidity forecasting
+    </li>
+    <li style={{ marginBottom: "30px" }}>
+      Maximize launch safety through accurate forecasting
+    </li>
+  </ul>
+</div>
+
 
     {/* --- Info Box (bottom-left) --- */}
-<div
+{/* <div
   style={{
     position: "absolute",
     bottom: "50px",
@@ -247,7 +264,7 @@ const About = () => {
     By analyzing wind patterns, humidity levels, and storm likelihood, it helps
     ensure every launch is safe, efficient, and precisely timed.
   </p>
-</div>
+</div> */}
 
   </div>
 );
