@@ -110,3 +110,21 @@ app.listen(port, () => {
     console.error('Server error:', error);
     process.exit(1); // exit the process so it doesn't hang
 });
+
+// -------------------------- HOPEFULLY THIS WORKS ------------------------
+// copy pasted straigh from gemini
+// Assuming your Express app instance is named 'app'
+// You need to import 'app' if this is a separate file, or define it here.
+
+app.get('/mcp', (req, res) => {
+  // Send a simple text response back to the browser
+  res.send('Hello from the MCP Server!'); 
+  
+  // Or if it's an API, you might send JSON:
+  // res.json({ message: 'MCP status: Online' });
+});
+
+// You might also want to add a root route for '/'
+app.get('/', (req, res) => {
+  res.send('Welcome to the root of the server.');
+});
