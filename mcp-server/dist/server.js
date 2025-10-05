@@ -1,4 +1,6 @@
 // ----------------------------- IMPORTS -----------------------------
+// Load environment variables from .env file
+import 'dotenv/config';
 // McpServer = creates and manages your own MCP server (like a mini API that follows MCP protocol rules).
 // ResourceTemplate = defines "dynamic" resource URLs (e.g. greeting://{name}) that can change based on input.
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -9,6 +11,8 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import express from 'express';
 // registerTools = centralized function to register all tools from the ./tools directory.
 import { registerAll as registerTools } from './tools/index.js';
+// registerResources = centralized function to register all resources from the ./resources directory.
+import { registerAll as registerResources } from './resources/index.js';
 // ----------------------------- MCP SERVER SETUP -----------------------------
 // Create an MCP server instance named "demo-server".
 // This object will hold all the tools and resources you register.
@@ -16,6 +20,31 @@ const server = new McpServer({
     name: 'demo-server', // friendly server name (shows up in client listings)
     version: '1.0.0' // version number of this server
 });
+// Keep track of registered tools and resources for the /list endpoint
+const registeredTools = [];
+const registeredResources = [];
+// Wrap the registerTool method to track tools
+const originalRegisterTool = server.registerTool.bind(server);
+server.registerTool = function (name, metadata, handler) {
+    registeredTools.push({
+        name,
+        description: metadata?.description || metadata?.title || name,
+        title: metadata?.title,
+        inputSchema: metadata?.inputSchema
+    });
+    return originalRegisterTool(name, metadata, handler);
+};
+// Wrap the registerResource method to track resources
+const originalRegisterResource = server.registerResource.bind(server);
+server.registerResource = function (name, template, metadata, handler) {
+    registeredResources.push({
+        name,
+        uri: template?.template || `${name}://`,
+        description: metadata?.description,
+        title: metadata?.title
+    });
+    return originalRegisterResource(name, template, metadata, handler);
+};
 // ----------------------------- REGISTER A RESOURCE -----------------------------
 // // Register a dynamic "Greeting" resource that generates text like "Hello, Brittany!"
 // server.registerResource(
@@ -40,10 +69,12 @@ const server = new McpServer({
 //         ]
 //     })
 // );
-// ----------------------------- REGISTER TOOLS -----------------------------
+// ----------------------------- REGISTER TOOLS & RESOURCES -----------------------------
 // Call the centralized function to register all tools from the ./tools directory.
 // Register all tools here (await if your index uses dynamic imports)
 await registerTools(server);
+// Register all resources from the ./resources directory
+await registerResources(server);
 // ----------------------------- EXPRESS SERVER SETUP -----------------------------
 // Create an Express app instance to expose an HTTP endpoint.
 const app = express();
@@ -53,25 +84,14 @@ app.use(express.json());
 // Endpoint to list all available tools and resources for Claude
 app.get('/list', async (req, res) => {
     try {
-        // Get the tools and resources from the server
-        const tools = Array.from(server._tools.values()).map((tool) => ({
-            name: tool.name,
-            description: tool.description,
-            inputSchema: tool.inputSchema
-        }));
-        const resources = Array.from(server._resources.values()).map((resource) => ({
-            uri: resource.template?.template || resource.uri,
-            name: resource.name,
-            description: resource.description
-        }));
         res.json({
-            tools,
-            resources
+            tools: registeredTools,
+            resources: registeredResources
         });
     }
     catch (error) {
         console.error('Error listing tools/resources:', error);
-        res.status(500).json({ error: 'Failed to list tools and resources' });
+        res.status(500).json({ error: 'Failed to list tools and resources', details: String(error) });
     }
 });
 // ----------------------------- /mcp ROUTE -----------------------------
