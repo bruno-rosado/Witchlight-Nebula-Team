@@ -73,11 +73,11 @@ const About = () => {
 
   // ---------- 🚀 ROCKET ----------
   const rocket = new Image();
-  rocket.src = "/rocket_clipart.png"; // from public folder
+  rocket.src = "/rocket_image.png"; // from public folder
   const rocketWidth = 100;
   const rocketHeight = 180;
-  let rocketX = screenW - rocketWidth - 50;
-  let rocketY = screenH - rocketHeight - 50;
+  let rocketX = screenW - rocketWidth - 650;
+  let rocketY = screenH - rocketHeight - 10;
 
   // ---------- SMOKE PARTICLES ----------
   const smokeParticles = [];
@@ -209,10 +209,10 @@ const About = () => {
     left: "30px",
     zIndex: 2,
     color: "white",
-    fontSize: "1.2rem",
+    fontSize: ".8rem",
     lineHeight: "3",
     textAlign: "left",
-    maxWidth: "380px",
+    maxWidth: "370px",
     wordWrap: "break-word",
   }}
 >
@@ -223,48 +223,96 @@ const About = () => {
       paddingLeft: "10px",
     }}
   >
-    <li style={{ marginBottom: "30px" }}>
-      Provide launch prep team with important weather info
+    <li style={{ marginBottom: "10px" }}>
+      Gathering Real-Time Data — Nebula integrates NASA’s diverse datasets
+      into one platform using the Model Context Protocol (MCP), eliminating 
+      data silos and enabling instant access to mission-critical information.
     </li>
-    <li style={{ marginBottom: "30px" }}>
-      Cloud cover and visibility monitoring
+    <li style={{ marginBottom: "10px" }}>
+      Processing & Reasoning Across Systems — Through natural language queries 
+      and cross-system reasoning, Nebula correlates weather, natural events, and 
+      mission data in real time — transforming raw data into actionable insights in seconds.
     </li>
-    <li style={{ marginBottom: "30px" }}>
-      Rain probability and humidity forecasting
-    </li>
-    <li style={{ marginBottom: "30px" }}>
-      Maximize launch safety through accurate forecasting
+    <li style={{ marginBottom: "10px" }}>
+      Enabling Collaboration & Rapid Decisions — By preserving mission context and standardizing 
+      access, Nebula empowers NASA teams to make faster, more informed, and collaborative decisions 
+      across research, planning, and operations.
     </li>
   </ul>
 </div>
 
-
-    {/* --- Info Box (bottom-left) --- */}
-{/* <div
+{/* --- Freely movable visuals --- */}
+<img
+  src="/gathering_weather_data_step1_visual.png"
+  alt="Gathering Weather Data"
   style={{
     position: "absolute",
-    bottom: "50px",
-    left: "50px",
-    zIndex: 2,
-    backgroundColor: "rgba(255, 255, 255, 0.15)", // translucent white
-    color: "white",
-    padding: "20px 25px",
-    borderRadius: "12px",
-    maxWidth: "500px",
-    fontSize: "1.4rem",
-    lineHeight: "1.6",
-    backdropFilter: "blur(6px)", // frosted-glass effect
-    boxShadow: "0 0 12px rgba(255, 255, 255, 0.1)",
-    minHeight: "250px",
+    top: "100px",   // move vertically
+    left: "420px",  // move horizontally
+    width: "400px",
+    height: "auto",
+    zIndex: 3,
   }}
->
-  <p>
-    Our weather prediction system uses real-time atmospheric data and
-    AI-powered forecasting models to evaluate optimal rocket launch windows.
-    By analyzing wind patterns, humidity levels, and storm likelihood, it helps
-    ensure every launch is safe, efficient, and precisely timed.
-  </p>
-</div> */}
+/>
+
+<img
+  src="/processing_data_step2_visual.png"
+  alt="Processing Data"
+  style={{
+    position: "absolute",
+    top: "250px",
+    left: "410px",
+    width: "300px",
+    height: "auto",
+    zIndex: 3,
+  }}
+/>
+
+<img
+  src="/stick_highfive.png"
+  alt="Team Collaboration"
+  style={{
+    position: "absolute",
+    top: "470px",
+    left: "410px",
+    width: "150px",
+    height: "auto",
+    zIndex: 3,
+  }}
+/>
+
+
+
+    {/* --- Info Box (bottom-right) --- */}
+    <div
+      style={{
+        position: "absolute",
+        bottom: "50px",
+        right: "50px", // moved to far right
+        zIndex: 2,
+        backgroundColor: "rgba(255, 255, 255, 0.15)", // translucent white
+        color: "white",
+        padding: "25px 30px",
+        borderRadius: "12px",
+        fontSize: "1.4rem",
+        lineHeight: "1.6",
+        backdropFilter: "blur(6px)", // frosted-glass effect
+        boxShadow: "0 0 12px rgba(255, 255, 255, 0.1)",
+        maxHeight: "800px",
+        maxWidth: "350px",
+        textAlign: "left",
+        height: "500px",
+      }}
+    >
+      <p>
+        Project Nebula is a unified intelligence platform built on the Model Context Protocol (MCP) 
+        that connects NASA's diverse datasets, APIs, and analytical tools into a single, seamless environment. 
+        From real-time natural event tracking to weather forecasting and beyond, Nebula acts as a shared context 
+        fabric enabling mission planners, engineers, and researchers to query, combine, and reason across information 
+        sources with unprecedented ease.
+      </p>
+    </div>
+
 
   </div>
 );
