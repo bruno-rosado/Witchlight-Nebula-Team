@@ -38,7 +38,7 @@ export function register(server: McpServer) {
       }
 
       const params = new URLSearchParams({
-        q: `weather at ${safeCity}`,
+        q: `weather ${safeCity}`,
         engine: 'google',
         api_key: apiKey,
       });
