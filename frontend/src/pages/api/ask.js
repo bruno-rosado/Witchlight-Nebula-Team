@@ -2,7 +2,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL || "claude-3-5-sonnet-20240620";
-const CLAUDE_MAX_TOKENS = parseInt(process.env.CLAUDE_MAX_TOKENS || "800", 10);
+const CLAUDE_MAX_TOKENS = parseInt(process.env.CLAUDE_MAX_TOKENS || "4096", 10);
 
 // 1) Tell Claude what tool it may call
 const tools = [
@@ -128,25 +128,43 @@ export default async function handler(req, res) {
       { role: "user", content: [{ type: "text", text: `Question: ${question}` }] }
     ];
 
-    // First turn: let Claude decide whether to call a tool
-    const first = await anthropic.messages.create({
-      model: CLAUDE_MODEL,
-      max_tokens: CLAUDE_MAX_TOKENS,
-      tools,
-      system,
-      messages
-    });
+    // Multi-turn agentic loop: keep going until Claude stops requesting tools
+    const MAX_TURNS = 10; // Safety limit
+    let turnCount = 0;
 
-    const contentBlocks = first.content || [];
-    const toolUseBlocks = contentBlocks.filter(b => b.type === "tool_use");
+    while (turnCount < MAX_TURNS) {
+      turnCount++;
 
-    // If Claude asked to use tools, run them, then send tool_result back for a final answer
-    if (toolUseBlocks.length > 0) {
+      // Call Claude
+      const response = await anthropic.messages.create({
+        model: CLAUDE_MODEL,
+        max_tokens: CLAUDE_MAX_TOKENS,
+        tools,
+        system,
+        messages
+      });
+
+      // Add assistant's response to messages
+      messages.push({ role: "assistant", content: response.content });
+
+      // Check if Claude used any tools
+      const toolUseBlocks = response.content.filter(b => b.type === "tool_use");
+
+      // If no tools used, Claude has finished - return the answer
+      if (toolUseBlocks.length === 0) {
+        const finalText = response.content
+          .filter(b => b.type === "text")
+          .map(b => b.text)
+          .join("\n\n");
+
+        return res.status(200).json({ ok: true, answer: finalText });
+      }
+
+      // Execute all tool calls
       const toolResults = [];
 
       for (const tu of toolUseBlocks) {
         if (tu.name !== "mcp_call_tool") {
-          // Name mismatch would land here; keep names identical to avoid this.
           toolResults.push({
             type: "tool_result",
             tool_use_id: tu.id,
@@ -158,7 +176,6 @@ export default async function handler(req, res) {
         try {
           const { tool, args } = tu.input || {};
           const out = await callMcpTool(tool, args || {});
-          // Normalize to text for Claude (you can pass JSON as string)
           const textOut =
             typeof out === "string" ? out : JSON.stringify(out, null, 2);
 
@@ -179,38 +196,16 @@ export default async function handler(req, res) {
         }
       }
 
-      // Second turn: give Claude the tool results so it can compose a good final answer
-      const followup = await anthropic.messages.create({
-        model: CLAUDE_MODEL,
-        max_tokens: CLAUDE_MAX_TOKENS,
-        tools,
-        system,
-        messages: [
-          // prior user
-          ...messages,
-          // assistant's tool_use blocks from first turn
-          { role: "assistant", content: contentBlocks },
-          // user's tool_result blocks
-          { role: "user", content: toolResults }
-        ]
-      });
+      // Add tool results as user message
+      messages.push({ role: "user", content: toolResults });
 
-      const finalText = (followup.content || [])
-        .filter(b => b.type === "text")
-        .map(b => b.text)
-        .join("\n\n");
-
-      return res.status(200).json({ ok: true, answer: finalText });
+      // Loop continues - Claude will see tool results and decide next step
     }
 
-    // No tools needed; return Claude's direct answer
-    const finalText = contentBlocks
-      .filter(b => b.type === "text")
-      .map(b => b.text)
-      .join("\n\n");
-
-
-      return res.status(200).json({ ok: true, answer: finalText });
+    // Safety limit reached
+    return res.status(500).json({
+      error: `Reached maximum turn limit (${MAX_TURNS}). Query too complex.`
+    });
   } catch (err) {
     console.error("Error in /api/ask:", err);
     return res.status(500).json({ error: err?.message ?? String(err) });

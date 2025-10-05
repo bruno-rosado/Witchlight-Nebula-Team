@@ -1,5 +1,4 @@
 // ----------------------------- IMPORTS -----------------------------
-
 // Load environment variables from .env file
 import 'dotenv/config';
 
@@ -13,9 +12,6 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 
 // express = lightweight Node.js web framework for defining routes such as /mcp.
 import express from 'express';
-
-// zod = library for schema validation; defines the shape and type of inputs/outputs.
-import { z } from 'zod';
 
 // registerTools = centralized function to register all tools from the ./tools directory.
 import { registerAll as registerTools } from './tools/index.js';
@@ -60,37 +56,6 @@ server.registerResource = function(name: string, template: any, metadata: any, h
     return originalRegisterResource(name, template, metadata, handler);
 };
 
-
-// ----------------------------- REGISTER A RESOURCE -----------------------------
-
-// // Register a dynamic "Greeting" resource that generates text like "Hello, Brittany!"
-// server.registerResource(
-//     'greeting',   // internal ID for the resource type
-
-//     // ResourceTemplate defines the URI format: greeting://{name}
-//     // When a client requests greeting://Alice, {name} becomes "Alice".
-//     new ResourceTemplate('greeting://{name}', { list: undefined }),
-
-//     // ---- RESOURCE METADATA ----
-//     {
-//         title: 'Greeting Resource',        // name shown to clients
-//         description: 'Dynamic greeting generator'  // description for documentation/UI
-//     },
-
-//     // ---- RESOURCE HANDLER FUNCTION ----
-//     // Called whenever someone reads a greeting://... URI.
-//     async (uri, { name }) => ({
-//         // Return a list of "content objects" describing what's in this resource.
-//         contents: [
-//             {
-//                 uri: uri.href,             // full URI string (e.g. greeting://Alice)
-//                 text: `Hello, ${name}!`    // actual text content
-//             }
-//         ]
-//     })
-// );
-
-
 // ----------------------------- REGISTER TOOLS & RESOURCES -----------------------------
 // Call the centralized function to register all tools from the ./tools directory.
 // Register all tools here (await if your index uses dynamic imports)
@@ -122,7 +87,6 @@ app.get('/list', async (req, res) => {
 });
 
 // ----------------------------- /mcp ROUTE -----------------------------
-
 // Define the POST route where MCP clients send their requests.
 app.post('/mcp', async (req, res) => {
 
@@ -150,7 +114,7 @@ app.post('/mcp', async (req, res) => {
 
 // ----------------------------- START THE SERVER -----------------------------
 // Pick a port: use PORT from env if set, otherwise default to 3000.
-const port = parseInt(process.env.PORT || '3000');
+const port = parseInt(process.env.PORT || '3001');
 // Start the Express server listening.
 app.listen(port, () => {
     // Log a startup message to the console for confirmation.
