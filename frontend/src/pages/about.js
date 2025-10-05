@@ -306,7 +306,7 @@ const About = () => {
         color: "white",
         padding: "25px 30px",
         borderRadius: "12px",
-        fontSize: "1.4rem",
+        fontSize: "1.2rem",
         lineHeight: "1.6",
         backdropFilter: "blur(6px)", // frosted-glass effect
         boxShadow: "0 0 12px rgba(255, 255, 255, 0.1)",
