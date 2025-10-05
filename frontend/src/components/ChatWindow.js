@@ -3,7 +3,7 @@ import MessageList from './MessageList'
 import ChatInput from './ChatInput'
 
 const seedMessages = [
-  { id: 1, role: 'assistant', text: 'Hello! I am Nabula — ask me anything.' }
+  { id: 1, role: 'assistant', text: 'Hello! I am Nebula — ask me anything.' }
 ]
 
 export default function ChatWindow() {
@@ -23,10 +23,19 @@ export default function ChatWindow() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: text })
       })
+
+      if (!r.ok) {
+        const errorData = await r.json().catch(() => ({ error: 'Unknown error' }))
+        throw new Error(errorData.error || `HTTP ${r.status}`)
+      }
+
       const data = await r.json()
       const assistantText = data?.answer ?? data?.reply ?? data?.message ?? (typeof data === 'string' ? data : '(no answer)')
       const assistant = { id: Date.now() + 1, role: 'assistant', text: assistantText }
       setMessages((m) => [...m, assistant])
+    } catch (err) {
+      const errorMsg = { id: Date.now() + 1, role: 'assistant', text: `Error: ${err.message}` }
+      setMessages((m) => [...m, errorMsg])
     } finally {
       setIsThinking(false)
     }
@@ -37,8 +46,8 @@ export default function ChatWindow() {
       <div className="px-6 py-4 border-b">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-semibold">Nabula</h1>
-            <div className="text-sm text-slate-500">Lightweight chat interface</div>
+            <h1 className="text-xl font-semibold">Witchlight Nebula</h1>
+            <div className="text-sm text-slate-500">AI-powered conversation assistant</div>
           </div>
         </div>
       </div>
