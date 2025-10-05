@@ -24,9 +24,9 @@ export default function Home() {
     }
   }
 
-    return (
-        <main className="p-8">
-                  <h1>MCP Ask</h1>
+  return (
+    <main className="p-8">
+      <h1>MCP Ask</h1>
       <form onSubmit={onSubmit}>
         <textarea
           rows={4}
@@ -45,7 +45,6 @@ export default function Home() {
           {JSON.stringify(res, null, 2)}
         </pre>
       )}
-            <AskForm />
-        </main>
-    )
+    </main>
+  )
 }

@@ -50,7 +50,7 @@ server.registerTool = function(name: string, metadata: any, handler: any) {
 
 // Wrap the registerResource method to track resources
 const originalRegisterResource = server.registerResource.bind(server);
-server.registerResource = function(name: string, template: any, metadata: any, handler: any) {
+server.registerResource = function(name: string, template: any, metadata: any, handler: any): any {
     registeredResources.push({
         name,
         uri: template?.template || `${name}://`,
