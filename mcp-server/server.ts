@@ -96,21 +96,6 @@ app.post('/mcp', async (req, res) => {
     await transport.handleRequest(req, res, req.body);
 });
 
-
-// ----------------------------- START THE SERVER -----------------------------
-// Pick a port: use PORT from env if set, otherwise default to 3000.
-const port = parseInt(process.env.PORT || '3000');
-// Start the Express server listening.
-app.listen(port, () => {
-    // Log a startup message to the console for confirmation.
-    console.log(`Demo MCP Server running on http://localhost:${port}/mcp`);
-})
-// Handle any startup errors (e.g. port already in use).
-.on('error', error => {
-    console.error('Server error:', error);
-    process.exit(1); // exit the process so it doesn't hang
-});
-
 // -------------------------- HOPEFULLY THIS WORKS ------------------------
 // copy pasted straigh from gemini
 // Assuming your Express app instance is named 'app'
@@ -128,3 +113,18 @@ app.get('/mcp', (req, res) => {
 app.get('/', (req, res) => {
   res.send('Welcome to the root of the server.');
 });
+
+// ----------------------------- START THE SERVER -----------------------------
+// Pick a port: use PORT from env if set, otherwise default to 3000.
+const port = parseInt(process.env.PORT || '3000');
+// Start the Express server listening.
+app.listen(port, () => {
+    // Log a startup message to the console for confirmation.
+    console.log(`Demo MCP Server running on http://localhost:${port}/mcp`);
+})
+// Handle any startup errors (e.g. port already in use).
+.on('error', error => {
+    console.error('Server error:', error);
+    process.exit(1); // exit the process so it doesn't hang
+});
+
