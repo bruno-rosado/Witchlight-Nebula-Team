@@ -45,30 +45,6 @@ server.registerResource = function (name, template, metadata, handler) {
     });
     return originalRegisterResource(name, template, metadata, handler);
 };
-// ----------------------------- REGISTER A RESOURCE -----------------------------
-// // Register a dynamic "Greeting" resource that generates text like "Hello, Brittany!"
-// server.registerResource(
-//     'greeting',   // internal ID for the resource type
-//     // ResourceTemplate defines the URI format: greeting://{name}
-//     // When a client requests greeting://Alice, {name} becomes "Alice".
-//     new ResourceTemplate('greeting://{name}', { list: undefined }),
-//     // ---- RESOURCE METADATA ----
-//     {
-//         title: 'Greeting Resource',        // name shown to clients
-//         description: 'Dynamic greeting generator'  // description for documentation/UI
-//     },
-//     // ---- RESOURCE HANDLER FUNCTION ----
-//     // Called whenever someone reads a greeting://... URI.
-//     async (uri, { name }) => ({
-//         // Return a list of "content objects" describing what's in this resource.
-//         contents: [
-//             {
-//                 uri: uri.href,             // full URI string (e.g. greeting://Alice)
-//                 text: `Hello, ${name}!`    // actual text content
-//             }
-//         ]
-//     })
-// );
 // ----------------------------- REGISTER TOOLS & RESOURCES -----------------------------
 // Call the centralized function to register all tools from the ./tools directory.
 // Register all tools here (await if your index uses dynamic imports)
