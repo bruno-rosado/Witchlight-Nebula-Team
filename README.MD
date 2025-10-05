@@ -20,7 +20,7 @@ Like the stellar nurseries where stars are born, Nebula represents NASA's growin
 
 ---
 
-## <� Problem Statement
+## Problem Statement
 
 Current challenges in NASA's data ecosystem:
 
